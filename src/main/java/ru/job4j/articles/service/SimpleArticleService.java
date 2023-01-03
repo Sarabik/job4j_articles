@@ -23,17 +23,12 @@ public class SimpleArticleService implements ArticleService {
     }
 
     @Override
-    public void generate(Store<Word> wordStore, int count, Store<Article> articleStore, int cache) {
+    public void generate(Store<Word> wordStore, int count, Store<Article> articleStore) {
         LOGGER.info("Геренация статей в количестве {}", count);
         var words = wordStore.findAll();
-        List<Article> tempArticles = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
             LOGGER.info("Сгенерирована статья № {}", i);
-            tempArticles.add(articleGenerator.generate(words));
-            if (i % cache == 0 || i == count) {
-                tempArticles.forEach(articleStore::save);
-                tempArticles.clear();
-            }
+            articleStore.save(articleGenerator.generate(words));
         }
     }
 }
